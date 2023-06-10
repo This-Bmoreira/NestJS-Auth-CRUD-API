@@ -1,12 +1,13 @@
 import {
-	Body,
-	Controller,
-	Delete,
-	Get,
-	Param,
-	Patch,
-	Post,
-	Put,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Put,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdatePatchUserDto } from './dto/update-patch-user.dto';
@@ -23,37 +24,37 @@ export class UserController {
     return { users: [] };
   }
   @Get(':id')
-  async show(@Param() params) {
-    return { user: {}, params };
+  async show(@Param('id', ParseIntPipe) id: number) {
+    return { user: {}, id };
   }
   @Put(':id')
   async update(
     @Body() { name, password, email }: UpdatePutUserDto,
-    @Param() params,
+    @Param('id', ParseIntPipe) id: number,
   ) {
     return {
       name,
       password,
       email,
-      params,
+      id,
     };
   }
   @Patch(':id')
   async updatePartial(
     @Body() { name, password, email }: UpdatePatchUserDto,
-    @Param() params,
+    @Param('id', ParseIntPipe) id: number,
   ) {
     return {
       name,
       password,
       email,
-      params,
+      id,
     };
   }
   @Delete(':id')
-  async delete(@Param() params) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     return {
-      params,
+      id,
     };
   }
 }
