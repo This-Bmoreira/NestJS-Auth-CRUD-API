@@ -18,8 +18,8 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Post()
-  async create(@Body() { email, name, password }: CreateUserDto) {
-    return this.userService.create({ email, name, password });
+  async create(@Body() { email, name, password, birthAt }: CreateUserDto) {
+    return this.userService.create({ email, name, password, birthAt });
   }
   @Get()
   async list() {
@@ -31,22 +31,25 @@ export class UserController {
   }
   @Put(':id')
   async update(
-    @Body() { name, password, email }: UpdatePutUserDto,
+    @Body() { name, password, email, birthAt }: UpdatePutUserDto,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    return this.userService.update(id, { name, password, email });
+    return this.userService.update(id, { name, password, email, birthAt });
   }
   @Patch(':id')
   async updatePartial(
-    @Body() { name, password, email }: UpdatePatchUserDto,
+    @Body() { name, password, email, birthAt }: UpdatePatchUserDto,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    return this.userService.updatePartial(id, { name, password, email });
+    return this.userService.updatePartial(id, {
+      name,
+      password,
+      email,
+      birthAt,
+    });
   }
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    return {
-      id,
-    };
+    return this.userService.delete(id);
   }
 }
