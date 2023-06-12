@@ -1,4 +1,10 @@
-import { Module } from '@nestjs/common';
+import {
+	MiddlewareConsumer,
+	Module,
+	NestModule,
+	RequestMethod,
+} from '@nestjs/common';
+import { UserIdCheckMiddleware } from '../middleware/user-id-check.middleware';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
@@ -9,4 +15,11 @@ import { UserService } from './user.service';
   providers: [UserService, PrismaService],
   exports: [],
 })
-export class UserModule {}
+export class UserModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(UserIdCheckMiddleware).forRoutes({
+      path: 'users/:id',
+      method: RequestMethod.ALL,
+    });
+  }
+}
