@@ -7,13 +7,9 @@ import { UpdatePutUserDto } from './dto/update-put-user.dto';
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
-  async create({ email, name, password }: CreateUserDto) {
+  async create(data: CreateUserDto) {
     return await this.prisma.user.create({
-      data: {
-        email,
-        name,
-        password,
-      },
+      data,
     });
   }
   async list() {
@@ -30,7 +26,7 @@ export class UserService {
   }
   async update(
     id: number,
-    { birthAt, email, name, password }: UpdatePutUserDto,
+    { birthAt, email, name, password, role }: UpdatePutUserDto,
   ) {
     await this.exists(id);
     return this.prisma.user.update({
@@ -39,6 +35,7 @@ export class UserService {
         email,
         name,
         password,
+        role,
       },
       where: {
         id,
@@ -48,7 +45,7 @@ export class UserService {
 
   async updatePartial(
     id: number,
-    { birthAt, email, name, password }: UpdatePatchUserDto,
+    { birthAt, email, name, password, role }: UpdatePatchUserDto,
   ) {
     await this.exists(id);
     const data: any = {};
@@ -63,6 +60,9 @@ export class UserService {
     }
     if (password) {
       data.password = password;
+    }
+    if (role) {
+      data.role = role;
     }
     return this.prisma.user.update({
       data,
