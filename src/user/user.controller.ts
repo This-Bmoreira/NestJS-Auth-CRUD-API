@@ -9,6 +9,7 @@ import {
 	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { ParamId } from '../decorators/param-id.decorator';
 import { Roles } from '../decorators/roles.decorators';
 import { Role } from '../enums/role.enum';
@@ -20,12 +21,11 @@ import { UpdatePatchUserDto } from './dto/update-patch-user.dto';
 import { UpdatePutUserDto } from './dto/update-put-user.dto';
 import { UserService } from './user.service';
 @Roles(Role.Admin)
-@UseGuards(AuthGuard, RoleGuard)
+@UseGuards(AuthGuard, RoleGuard, ThrottlerGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @UseInterceptors(LogInterceptor)
-
   @Post()
   async create(
     @Body() { email, name, password, birthAt, role }: CreateUserDto,
