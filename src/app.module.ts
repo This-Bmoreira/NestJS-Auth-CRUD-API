@@ -1,4 +1,5 @@
 import { Module, forwardRef } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
@@ -8,10 +9,10 @@ import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 10,
-      ignoreUserAgents: [/HTTPie\/3.2.2 /gi],
     }),
     forwardRef(() => UserModule),
     forwardRef(() => AuthModule),
