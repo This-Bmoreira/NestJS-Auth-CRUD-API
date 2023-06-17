@@ -1,5 +1,5 @@
-import { BadRequestException, Body, Controller, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { BadRequestException, Body, Controller, Post, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
 import { User } from '../decorators/user.decorator';
 import { FileService } from '../file/file.service';
@@ -55,5 +55,25 @@ export class AuthController {
       throw new BadRequestException(e)
     }
     return { success: true }
+  }
+
+  @UseInterceptors(FilesInterceptor('files'))
+  @UseGuards(AuthGuard)
+  @Post('files')
+  async uploadFiles(@User() user, @UploadedFiles() files: Express.Multer.File[]) {
+    return files
+  }
+
+  @UseInterceptors(FileFieldsInterceptor([{
+    name: 'photo',
+    maxCount: 1,
+  }, {
+    name: 'documents',
+    maxCount: 10,
+  }]))
+  @UseGuards(AuthGuard)
+  @Post('files-fields')
+  async uploadFilesFields(@User() user, @UploadedFiles() files: { photo: Express.Multer.File, documents: Express.Multer.File[] }) {
+    return files
   }
 }
