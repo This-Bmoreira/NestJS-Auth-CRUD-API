@@ -1,13 +1,13 @@
 import {
-	Body,
-	Controller,
-	Delete,
-	Get,
-	Patch,
-	Post,
-	Put,
-	UseGuards,
-	UseInterceptors,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  Put,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { ParamId } from '../decorators/param-id.decorator';
@@ -24,7 +24,7 @@ import { UserService } from './user.service';
 @UseGuards(AuthGuard, RoleGuard, ThrottlerGuard)
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
   @UseInterceptors(LogInterceptor)
   @Post()
   async create(
