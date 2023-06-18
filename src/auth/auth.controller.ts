@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Post, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, FileTypeValidator, MaxFileSizeValidator, ParseFilePipe, Post, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
 import { User } from '../decorators/user.decorator';
@@ -45,7 +45,12 @@ export class AuthController {
   @UseInterceptors(FileInterceptor('file'))
   @UseGuards(AuthGuard)
   @Post('photo')
-  async uploadPhoto(@User() user, @UploadedFile() photo: Express.Multer.File) {
+  async uploadPhoto(@User() user, @UploadedFile(new ParseFilePipe({
+    validators: [
+      new FileTypeValidator({ fileType: 'image/png' }),
+      new MaxFileSizeValidator({ maxSize: 1024 * 50 })
+    ]
+  })) photo: Express.Multer.File) {
 
     const path = join(__dirname, '..', '..', 'storage', 'photo', `photo-${user.id}`)
 
